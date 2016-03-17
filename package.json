@@ -14,6 +14,7 @@
     "babel-preset-stage-0": "^6.5.0"
   },
   "scripts": {
+    "start": "node entry.js",
     "test": "mocha"
   },
   "repository": {

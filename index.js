@@ -1,8 +1,34 @@
 import express from 'express'
+import graphqlHTTP from 'express-graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLSchema } from 'graphql'
+
+const data = require('./data.json')
 
 const app = express()
 
-app.get('/api', (req, res) =>
-  res.send('test'))
+const userType = new GraphQLObjectType({
+  name: 'User',
+  fields: {
+    id: { type: GraphQLString },
+    name: { type: GraphQLString }
+  }
+})
 
-app.listen(3000, err => console.log('listening on 3000...'))
+const schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      user: {
+        type: userType,
+        args: {
+          id: { type: GraphQLString }
+        },
+        resolve: (_, args) => data[args.id]
+      }
+    }
+  })
+})
+
+app.use('/api', graphqlHTTP({ schema }))
+
+app.listen(3000, console.log)
